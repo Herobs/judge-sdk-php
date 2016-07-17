@@ -1,0 +1,13 @@
+{
+    "name": "herobs/judge-sdk-php",
+    "description": "PHP sdk for judge API",
+    "type": "public",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Herobs",
+            "email": "herobs@herobs.cn"
+        }
+    ],
+    "require": {}
+}
