@@ -1,13 +1,21 @@
 {
-    "name": "herobs/judge-sdk-php",
-    "description": "PHP sdk for judge API",
-    "type": "public",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Herobs",
-            "email": "herobs@herobs.cn"
-        }
-    ],
-    "require": {}
+  "name": "herobs/judge-sdk-php",
+  "description": "PHP sdk for judge API",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Herobs",
+      "email": "herobs@herobs.cn"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0",
+    "guzzlehttp/guzzle": "~6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Judge\\": "src/"
+    }
+  }
 }
