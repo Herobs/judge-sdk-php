@@ -35,7 +35,10 @@ class Judge
      */
     public function __contruct($base, $id, $secret)
     {
-        // judge api
+        // check the base is a valid uri
+        if (preg_match('/^((https?:)(\/\/\/?)([\w]*(?::[\w]*)?@)?([\d\w\.-]+)(?::(\d+))?)?([\/\\\w\.()-]*)?(?:([?][^#]*)?(#.*)?)*/i', $base) === 0) {
+            throw new Exception('Invalid base uri');
+        }
         $this->base = $base;
         $this->id = $id;
         $secret = $secret;
