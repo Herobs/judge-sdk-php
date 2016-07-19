@@ -47,6 +47,7 @@ class Judge
             'base_uri' => $base,
             'timeout' => self::TIMEOUT,
             'connection_timeout' => self::CONNECTION_TIMEOUT,
+            'http_errors' => false,
         ]);
     }
     /**
