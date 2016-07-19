@@ -1,8 +1,8 @@
 <?php
-
 namespace Judge;
-
+require __DIR__.('/../vendor/autoload.php');
 use GuzzleHttp\Client;
+use InvalidArgumentException;
 
 class Judge
 {
@@ -33,15 +33,15 @@ class Judge
      * @param $id {string} account id
      * @param $secret {string} account secret
      */
-    public function __contruct($base, $id, $secret)
+    public function __construct($base, $id, $secret)
     {
         // check the base is a valid uri
-        if (preg_match('/^((https?:)(\/\/\/?)([\w]*(?::[\w]*)?@)?([\d\w\.-]+)(?::(\d+))?)?([\/\\\w\.()-]*)?(?:([?][^#]*)?(#.*)?)*/i', $base) === 0) {
-            throw new Exception('Invalid base uri');
+        if (preg_match('/^https?:\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$/i', $base) === 0) {
+            throw new InvalidArgumentException('Invalid base uri');
         }
         $this->base = $base;
         $this->id = $id;
-        $secret = $secret;
+        $this->secret = $secret;
         // create guzzle http client
         $this->client = new Client([
             'base_uri' => $base,
@@ -77,10 +77,7 @@ class Judge
         ]);
 
         $result = json_decode($response->getBody());
-        $result->success = false;
-        if ($response->getStatusCode() < 300) {
-            $result->success = true;
-        }
+        $result->statusCode = $response->getStatusCode();
 
         return $result;
     }
@@ -94,16 +91,13 @@ class Judge
 
         $response = $this->client->delete($path, [
             'headers' => [
-                'Authorization' => $this->getAuthorization($path, 'POST'),
+                'Authorization' => $this->getAuthorization($path, 'DELETE'),
             ],
             'json' => $problem,
         ]);
 
         $result = json_decode($response->getBody());
-        $result->success = false;
-        if ($response->getStatusCode() < 300) {
-            $result->success = true;
-        }
+        $result->statusCode = $response->getStatusCode();
 
         return $result;
     }
@@ -123,10 +117,7 @@ class Judge
         ]);
 
         $result = json_decode($response->getBody());
-        $result->success = false;
-        if ($response->getStatusCode() < 300) {
-            $result->success = true;
-        }
+        $result->statusCode = $response->getStatusCode();
 
         return $result;
     }
@@ -139,16 +130,13 @@ class Judge
 
         $response = $this->client->get($path, [
             'headers' => [
-                'Authorization' => $this->getAuthorization($path, 'POST'),
+                'Authorization' => $this->getAuthorization($path, 'GET'),
             ],
             'query' => $record,
         ]);
 
         $result = json_decode($response->getBody());
-        $result->success = false;
-        if ($response->getStatusCode() < 300) {
-            $result->success = true;
-        }
+        $result->statusCode = $response->getStatusCode();
 
         return $result;
     }
