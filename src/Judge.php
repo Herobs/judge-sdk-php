@@ -50,6 +50,7 @@ class Judge
             'http_errors' => false,
         ]);
     }
+
     /**
      * Generate sigature
      * @param $path {string} resource path
@@ -62,9 +63,11 @@ class Judge
         $sigature = hash_hmac('sha256', $this->id . $current . $path . $method, $this->secret);
         return $this->id . ' ' . $current . ' ' . $path . ' ' . $method . ' ' . $sigature;
     }
+
     /**
      * Create a new problem
      * @param $problem {object} problem will be created
+     * @return {object} raw result with http status code
      */
     public function addProblem($problem)
     {
@@ -82,9 +85,33 @@ class Judge
 
         return $result;
     }
+
     /**
-     * Delete a problem
-     * @param $problemId {object} the problem want to delete
+     * Update specific problem
+     * @param $problem {object} problem want to be updated
+     * @return {object} raw result with http status code
+     */
+    public function updateProblem($problem)
+    {
+        $path = '/problem';
+
+        $response = $this->client->put($path, [
+            'headers' => [
+                'Authorization' => $this->getAuthorization($path, 'POST'),
+            ],
+            'json' => $problem,
+        ]);
+
+        $result = json_decode($response->getBody());
+        $result->statusCode = $response->getStatusCode();
+
+        return $result;
+    }
+
+    /**
+     * Delete specific problem
+     * @param $problem {object} the problem want to delete
+     * @return {object} raw result with http status code
      */
     public function removeProblem($problem)
     {
@@ -102,9 +129,56 @@ class Judge
 
         return $result;
     }
+
     /**
-     * Add judge record
+     * Update specific test file
+     * @param $case {object} the test case want to be updated
+     * @return {object} raw result with http status code
+     */
+    public function testcase($case)
+    {
+        $path = '/testcase';
+
+        $response = $this->client->post($path, [
+            'headers' => [
+                'Authorization' => $this->getAuthorization($path, 'POST'),
+            ],
+            'json' => $case,
+        ]);
+
+        $result = json_decode($response->getBody());
+        $result->statusCode = $response->getStatusCode();
+
+        return $result;
+    }
+
+    /**
+     * Delete specific test case
+     * @param $case {object} the case want to be deleted
+     * @return {object} raw result with http status code
+     */
+    public function removeTestcase($case)
+    {
+        $path = '/testcase';
+
+        $response = $this->client->delete($path, [
+            'headers' => [
+                'Authorization' => $this->getAuthorization($path, 'DELETE'),
+            ],
+            'json' => $case,
+        ]);
+
+        $result = json_decode($response->getBody());
+        $result->statusCode = $response->getStatusCode();
+
+        return $result;
+    }
+
+
+    /**
+     * Add a judge record
      * @param $record {object} the code want to be judged
+     * @return {object} raw result with http status code
      */
     public function add($record)
     {

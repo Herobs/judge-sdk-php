@@ -1,6 +1,6 @@
 Judge API SDK with PHP
 ======================
-A simple judge api sdk write with php.
+A simple judge api sdk write with php for [OPJS](http://opjs.coder.tips).
 
 Install
 -------
@@ -23,3 +23,5 @@ $judge->add($record);
 // query a judge record result
 $judge->query($record);
 ```
+
+All objects in params are reference to [API](http://opjs.coder.tips/docs) docs.
