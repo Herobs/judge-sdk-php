@@ -97,7 +97,7 @@ class Judge
 
         $response = $this->client->put($path, [
             'headers' => [
-                'Authorization' => $this->getAuthorization($path, 'POST'),
+                'Authorization' => $this->getAuthorization($path, 'PUT'),
             ],
             'json' => $problem,
         ]);
