@@ -2,6 +2,7 @@
 namespace Judge;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use InvalidArgumentException;
 
 class Judge
@@ -69,21 +70,16 @@ class Judge
      * @param $problem {object} problem will be created
      * @return {object} raw result with http status code
      */
-    public function addProblem($problem)
+    protected function addProblem($problem)
     {
         $path = '/problem';
 
-        $response = $this->client->post($path, [
+        return $this->client->post($path, [
             'headers' => [
-                'Authorization' => $this->getAuthorization($path, 'POST'),
+                    'Authorization' => $this->getAuthorization($path, 'POST'),
             ],
             'json' => $problem,
         ]);
-
-        $result = json_decode($response->getBody());
-        $result->statusCode = $response->getStatusCode();
-
-        return $result;
     }
 
     /**
@@ -91,21 +87,16 @@ class Judge
      * @param $problem {object} problem want to be updated
      * @return {object} raw result with http status code
      */
-    public function updateProblem($problem)
+    protected function updateProblem($problem)
     {
         $path = '/problem';
 
-        $response = $this->client->put($path, [
+        return $this->client->put($path, [
             'headers' => [
                 'Authorization' => $this->getAuthorization($path, 'PUT'),
             ],
             'json' => $problem,
         ]);
-
-        $result = json_decode($response->getBody());
-        $result->statusCode = $response->getStatusCode();
-
-        return $result;
     }
 
     /**
@@ -113,21 +104,16 @@ class Judge
      * @param $problem {object} the problem want to delete
      * @return {object} raw result with http status code
      */
-    public function removeProblem($problem)
+    protected function removeProblem($problem)
     {
         $path = '/problem';
 
-        $response = $this->client->delete($path, [
+        return $this->client->delete($path, [
             'headers' => [
                 'Authorization' => $this->getAuthorization($path, 'DELETE'),
             ],
             'json' => $problem,
         ]);
-
-        $result = json_decode($response->getBody());
-        $result->statusCode = $response->getStatusCode();
-
-        return $result;
     }
 
     /**
@@ -135,21 +121,16 @@ class Judge
      * @param $case {object} the test case want to be updated
      * @return {object} raw result with http status code
      */
-    public function testcase($case)
+    protected function testcase($case)
     {
         $path = '/testcase';
 
-        $response = $this->client->post($path, [
+        return $this->client->post($path, [
             'headers' => [
                 'Authorization' => $this->getAuthorization($path, 'POST'),
             ],
             'json' => $case,
         ]);
-
-        $result = json_decode($response->getBody());
-        $result->statusCode = $response->getStatusCode();
-
-        return $result;
     }
 
     /**
@@ -157,21 +138,16 @@ class Judge
      * @param $case {object} the case want to be deleted
      * @return {object} raw result with http status code
      */
-    public function removeTestcase($case)
+    protected function removeTestCase($case)
     {
         $path = '/testcase';
 
-        $response = $this->client->delete($path, [
+        return $this->client->delete($path, [
             'headers' => [
                 'Authorization' => $this->getAuthorization($path, 'DELETE'),
             ],
             'json' => $case,
         ]);
-
-        $result = json_decode($response->getBody());
-        $result->statusCode = $response->getStatusCode();
-
-        return $result;
     }
 
 
@@ -180,39 +156,54 @@ class Judge
      * @param $record {object} the code want to be judged
      * @return {object} raw result with http status code
      */
-    public function add($record)
+    protected function add($record)
     {
         $path = '/status';
 
-        $response = $this->client->post($path, [
+        return $this->client->post($path, [
             'headers' => [
                 'Authorization' => $this->getAuthorization($path, 'POST'),
             ],
             'json' => $record,
         ]);
-
-        $result = json_decode($response->getBody());
-        $result->statusCode = $response->getStatusCode();
-
-        return $result;
     }
+
     /**
      * Query judge record
+     * @param $record {integer} record status id
+     * @return {object} raw result with http status code
      */
-    public function query($record)
+    protected function query($record)
     {
         $path = '/status';
 
-        $response = $this->client->get($path, [
+        return $this->client->get($path, [
             'headers' => [
                 'Authorization' => $this->getAuthorization($path, 'GET'),
             ],
             'query' => $record,
         ]);
+    }
 
-        $result = json_decode($response->getBody());
-        $result->statusCode = $response->getStatusCode();
-
+    /**
+     * Handle dynamic method calls
+     *
+     * @param  string  $method
+     * @param  array  $parameters
+     * @return mixed
+     */
+    protected function __call($method, $parameters)
+    {
+        try {
+            $response = call_user_func_array([$this, $method], $parameters);
+            $result = json_decode($response->getBody());
+            $result->statusCode = $response->getStatusCode();
+        } catch (RequestException $e) {
+            $result = (object)[
+                'message' => 'Cannot establish connection with judge server.',
+                'statusCode' => 500,
+            ];
+        }
         return $result;
     }
 }
