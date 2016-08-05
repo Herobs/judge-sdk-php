@@ -192,7 +192,7 @@ class Judge
      * @param  array  $parameters
      * @return mixed
      */
-    protected function __call($method, $parameters)
+    public function __call($method, $parameters)
     {
         try {
             $response = call_user_func_array([$this, $method], $parameters);
