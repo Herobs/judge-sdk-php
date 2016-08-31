@@ -1,6 +1,6 @@
 <?php
 
-namespace Judge\Exceptions;
+namespace Judge;
 
 use Exception;
 
