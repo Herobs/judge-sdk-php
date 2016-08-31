@@ -3,7 +3,7 @@ namespace Judge;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Judge\Exceptions\JudgeServiceException;
+use Judge\JudgeServiceException;
 
 class Judge
 {
@@ -201,7 +201,7 @@ class Judge
                 throw new JudgeServiceException($result->message);
             }
         } catch (RequestException $e) {
-            throw new JudgeServiceException('Cannot establish connection with judge server. '.$e->getMeesage());
+            throw new JudgeServiceException('Cannot establish connection with judge server. '.$e->getMessage());
         } catch (Exception $e) {
             throw new JudgeServiceException('Unknown error. '.$e->getMessage());
         }
