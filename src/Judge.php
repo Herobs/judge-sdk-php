@@ -3,7 +3,7 @@ namespace Judge;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use InvalidArgumentException;
+use Judge\Exceptions\JudgeServiceException;
 
 class Judge
 {
@@ -38,7 +38,7 @@ class Judge
     {
         // check the base is a valid uri
         if (preg_match('/^https?:\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$/i', $base) === 0) {
-            throw new InvalidArgumentException('Invalid base uri');
+            throw new JudgeServiceException('Invalid base uri');
         }
         $this->base = $base;
         $this->id = $id;
@@ -197,13 +197,15 @@ class Judge
         try {
             $response = call_user_func_array([$this, $method], $parameters);
             $result = json_decode($response->getBody());
-            $result->statusCode = $response->getStatusCode();
+            if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
+                throw new JudgeServiceException($result->message);
+            }
         } catch (RequestException $e) {
-            $result = (object)[
-                'message' => 'Cannot establish connection with judge server.',
-                'statusCode' => 500,
-            ];
+            throw new JudgeServiceException('Cannot establish connection with judge server. '.$e->getMeesage());
+        } catch (Exception $e) {
+            throw new JudgeServiceException('Unknown error. '.$e->getMessage());
         }
+
         return $result;
     }
 }
