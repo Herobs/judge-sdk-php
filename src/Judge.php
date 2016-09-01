@@ -71,7 +71,7 @@ class Judge
      * Create a new problem
      *
      * @param $problem {object} problem will be created
-     * @return {object} raw result with http status code
+     * @return {object} raw http response
      */
     protected function addProblem($problem)
     {
@@ -90,11 +90,11 @@ class Judge
      *
      * @param $problemId {integer} the problem will be updated
      * @param $problem {object} problem want to be updated
-     * @return {object} raw result with http status code
+     * @return {object} raw http response
      */
     protected function updateProblem($problemId, $problem)
     {
-        $path = '/problem/:'.$problemId;
+        $path = '/problem/'.$problemId;
 
         return $this->client->put($path, [
             'headers' => [
@@ -108,11 +108,11 @@ class Judge
      * Delete specific problem
      *
      * @param $problemId {object} the problem will be deleted
-     * @return {object} raw result with http status code
+     * @return {object} raw http response
      */
     protected function removeProblem($problemId)
     {
-        $path = '/problem/:'.$problemId;
+        $path = '/problem/'.$problemId;
 
         return $this->client->delete($path, [
             'headers' => [
@@ -122,14 +122,31 @@ class Judge
     }
 
     /**
+     * Copy specific problem
+     *
+     * @param $problemId {object} the problem will be copied
+     * @return {object} raw http response
+     */
+    protected function copyProblem($problemId)
+    {
+        $path = '/copy/'.$problemId;
+
+        return $this->client->get($path, [
+            'headers' => [
+                'Authorization' => $this->getAuthorization($path, 'GET'),
+            ],
+        ]);
+    }
+
+    /**
      * Update specific test file
      *
      * @param $case {object} the test case want to be updated
-     * @return {object} raw result with http status code
+     * @return {object} raw http response
      */
     protected function testcase($problemId, $caseId, $case)
     {
-        $path = '/testcase/:'.$problemId.'/:'.$caseId;
+        $path = '/testcase/'.$problemId.'/'.$caseId;
 
         return $this->client->post($path, [
             'headers' => [
@@ -143,11 +160,11 @@ class Judge
      * Delete specific test case
      *
      * @param $case {object} the case want to be deleted
-     * @return {object} raw result with http status code
+     * @return {object} raw http response
      */
     protected function removeTestCase($problemId, $caseId)
     {
-        $path = '/testcase/:'.$problemId.'/:'.$caseId;
+        $path = '/testcase/'.$problemId.'/'.$caseId;
 
         return $this->client->delete($path, [
             'headers' => [
@@ -160,7 +177,7 @@ class Judge
      * Add a judge record
      *
      * @param $record {object} the code want to be judged
-     * @return {object} raw result with http status code
+     * @return {object} raw http response
      */
     protected function add($record)
     {
@@ -177,11 +194,11 @@ class Judge
     /**
      * Query judge record
      * @param $record {integer} record status id
-     * @return {object} raw result with http status code
+     * @return {object} raw http response
      */
     protected function query($statusId)
     {
-        $path = '/status/:'.$statusId;
+        $path = '/status/'.$statusId;
 
         return $this->client->get($path, [
             'headers' => [
@@ -195,7 +212,7 @@ class Judge
      *
      * @param  string  $method
      * @param  array  $parameters
-     * @return mixed
+     * @return judge service response
      */
     public function __call($method, $parameters)
     {
