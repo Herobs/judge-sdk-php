@@ -30,6 +30,7 @@ class Judge
 
     /**
      * Constructor
+     *
      * @param $base {string} judge api base uri
      * @param $id {string} account id
      * @param $secret {string} account secret
@@ -54,6 +55,7 @@ class Judge
 
     /**
      * Generate sigature
+     *
      * @param $path {string} resource path
      * @param $method {GET|POST|PUT|DELETE|...} http method
      */
@@ -67,6 +69,7 @@ class Judge
 
     /**
      * Create a new problem
+     *
      * @param $problem {object} problem will be created
      * @return {object} raw result with http status code
      */
@@ -84,12 +87,14 @@ class Judge
 
     /**
      * Update specific problem
+     *
+     * @param $problemId {integer} the problem will be updated
      * @param $problem {object} problem want to be updated
      * @return {object} raw result with http status code
      */
-    protected function updateProblem($problem)
+    protected function updateProblem($problemId, $problem)
     {
-        $path = '/problem';
+        $path = '/problem/:'.$problemId;
 
         return $this->client->put($path, [
             'headers' => [
@@ -101,29 +106,30 @@ class Judge
 
     /**
      * Delete specific problem
-     * @param $problem {object} the problem want to delete
+     *
+     * @param $problemId {object} the problem will be deleted
      * @return {object} raw result with http status code
      */
-    protected function removeProblem($problem)
+    protected function removeProblem($problemId)
     {
-        $path = '/problem';
+        $path = '/problem/:'.$problemId;
 
         return $this->client->delete($path, [
             'headers' => [
                 'Authorization' => $this->getAuthorization($path, 'DELETE'),
             ],
-            'json' => $problem,
         ]);
     }
 
     /**
      * Update specific test file
+     *
      * @param $case {object} the test case want to be updated
      * @return {object} raw result with http status code
      */
-    protected function testcase($case)
+    protected function testcase($problemId, $caseId, $case)
     {
-        $path = '/testcase';
+        $path = '/testcase/:'.$problemId.'/:'.$caseId;
 
         return $this->client->post($path, [
             'headers' => [
@@ -135,24 +141,24 @@ class Judge
 
     /**
      * Delete specific test case
+     *
      * @param $case {object} the case want to be deleted
      * @return {object} raw result with http status code
      */
-    protected function removeTestCase($case)
+    protected function removeTestCase($problemId, $caseId)
     {
-        $path = '/testcase';
+        $path = '/testcase/:'.$problemId.'/:'.$caseId;
 
         return $this->client->delete($path, [
             'headers' => [
                 'Authorization' => $this->getAuthorization($path, 'DELETE'),
             ],
-            'json' => $case,
         ]);
     }
 
-
     /**
      * Add a judge record
+     *
      * @param $record {object} the code want to be judged
      * @return {object} raw result with http status code
      */
@@ -173,15 +179,14 @@ class Judge
      * @param $record {integer} record status id
      * @return {object} raw result with http status code
      */
-    protected function query($record)
+    protected function query($statusId)
     {
-        $path = '/status';
+        $path = '/status/:'.$statusId;
 
         return $this->client->get($path, [
             'headers' => [
                 'Authorization' => $this->getAuthorization($path, 'GET'),
             ],
-            'query' => $record,
         ]);
     }
 
