@@ -31,16 +31,12 @@ class Judge
     /**
      * Constructor
      *
-     * @param $base {string} judge api base uri
-     * @param $id {string} account id
-     * @param $secret {string} account secret
+     * @param {string} judge api base uri
+     * @param {string} account id
+     * @param {string} account secret
      */
     public function __construct($base, $id, $secret)
     {
-        // check the base is a valid uri
-        if (preg_match('/^https?:\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$/i', $base) === 0) {
-            throw new JudgeServiceException('Invalid base uri');
-        }
         $this->base = $base;
         $this->id = $id;
         $this->secret = $secret;
@@ -56,8 +52,9 @@ class Judge
     /**
      * Generate sigature
      *
-     * @param $path {string} resource path
-     * @param $method {GET|POST|PUT|DELETE|...} http method
+     * @param {string} resource path
+     * @param {GET|POST|PUT|DELETE|...} http method
+     * @return Authorization header
      */
     protected function getAuthorization($path, $method)
     {
@@ -70,7 +67,7 @@ class Judge
     /**
      * Create a new problem
      *
-     * @param $problem {object} problem will be created
+     * @param {object} problem will be created
      * @return {object} raw http response
      */
     protected function addProblem($problem)
@@ -88,8 +85,8 @@ class Judge
     /**
      * Update specific problem
      *
-     * @param $problemId {integer} the problem will be updated
-     * @param $problem {object} problem want to be updated
+     * @param {integer} the problem will be updated
+     * @param {object} problem want to be updated
      * @return {object} raw http response
      */
     protected function updateProblem($problemId, $problem)
@@ -107,7 +104,7 @@ class Judge
     /**
      * Delete specific problem
      *
-     * @param $problemId {object} the problem will be deleted
+     * @param {object} the problem will be deleted
      * @return {object} raw http response
      */
     protected function removeProblem($problemId)
@@ -124,7 +121,7 @@ class Judge
     /**
      * Copy specific problem
      *
-     * @param $problemId {object} the problem will be copied
+     * @param {object} the problem will be copied
      * @return {object} raw http response
      */
     protected function copyProblem($problemId)
@@ -141,7 +138,9 @@ class Judge
     /**
      * Update specific test file
      *
-     * @param $case {object} the test case want to be updated
+     * @param {integer} test case belong to
+     * @param {integer} test case id
+     * @param {object} the test case files want to be updated
      * @return {object} raw http response
      */
     protected function testcase($problemId, $caseId, $case)
@@ -159,7 +158,8 @@ class Judge
     /**
      * Delete specific test case
      *
-     * @param $case {object} the case want to be deleted
+     * @param {integer} test case belong to
+     * @param {integer} test case id
      * @return {object} raw http response
      */
     protected function removeTestCase($problemId, $caseId)
@@ -176,7 +176,7 @@ class Judge
     /**
      * Add a judge record
      *
-     * @param $record {object} the code want to be judged
+     * @param {object} the code want to be judged
      * @return {object} raw http response
      */
     protected function add($record)
@@ -193,7 +193,7 @@ class Judge
 
     /**
      * Query judge record
-     * @param $record {integer} record status id
+     * @param {integer} record status id
      * @return {object} raw http response
      */
     protected function query($statusId)
@@ -210,9 +210,9 @@ class Judge
     /**
      * Handle dynamic method calls
      *
-     * @param  string  $method
-     * @param  array  $parameters
-     * @return judge service response
+     * @param {string} $method
+     * @param {array} $parameters
+     * @return {object} judge service response
      */
     public function __call($method, $parameters)
     {
